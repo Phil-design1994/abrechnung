@@ -2,41 +2,53 @@
 #include <string>
 #include <vector>
 #include <fstream>
+#include <array>
 
 using namespace std;
 
-int prod[] {4,8,20,25,50};
+
+int muenzrollen[] {4,8,20,25,50};
+string muenzrollenwerte[] {"10 cent","20 cent","50 cent","1 euro","2 euro"};
+
+int scheinwerte[] {5,10,20,50,100};
+string schein[]{"5 euro", "10 euro", "20 euro", "50 euro", "100 euro"};
+
+int muenzeingabe(int wert){
+    string eingabe;
+    int result;
+
+    cout << "Anzahl der " << muenzrollenwerte[wert] << " Muenzrollen, oder b um neu zu beginnen \n";
+    cin >> eingabe;
+    if(eingabe != "b"){
+        result = stoi (eingabe);
+    }
+    else
+        result = -1;
+
+    return result;
+}
 
 vector<int> kassenzaehlung()
 {
-    string ten_cent;
-    string twenty_cent;
-    string fifty_cent;
-    string one_euro;
-    string two_euro;
-    vector<int> anzahl;
-
+    vector<int> anzahl (5,0);
     cout << "Begin der Abrechnung ..... \n";
-    //10 cent
-    cout << "Anzahl der 10 cent Muenzrollen \n";
-    cin >> ten_cent;
-    anzahl.push_back(stoi (ten_cent));
-    //20 cent
-    cout << "Anzahl der 20 cent Muenzrollen \n";
-    cin >> twenty_cent;
-    anzahl.push_back(stoi (twenty_cent));
-    //50 cnet
-    cout << "Anzahl der 50 cent Muenzrollen \n";
-    cin >> fifty_cent;
-    anzahl.push_back(stoi (fifty_cent));
-    //1 euro
-    cout << "Anzahl der 1 euro Muenzrollen \n";
-    cin >> one_euro;
-    anzahl.push_back(stoi (one_euro));
-    //2 euro
-    cout << "Anzahl der 2 euro Muenzrollen \n";
-    cin >> two_euro;
-    anzahl.push_back(stoi (two_euro));
+    
+    bool cond = true;
+    int count = 0;
+    while(cond == true){
+         if(count == 5){
+            cond = false;
+            break;
+        }
+        int tmp = muenzeingabe(count);
+       
+        if(tmp != -1){
+            anzahl[count] = tmp;
+            count++;
+        }
+        else
+            count = 0;
+    }
     return anzahl;
 }
 
@@ -44,7 +56,7 @@ int get_sum(vector<int> anzahlen, int prod[] )
 {
     int sum;
     for (int i = 0; i<anzahlen.size(); i++)
-        sum = sum + anzahlen[i] * prod[i];
+        sum = sum + anzahlen[i] * muenzrollen[i];
     
     return sum;
 }
@@ -84,46 +96,64 @@ int muenzen()
     return stoi (anzahl);
 }
 
+int scheineingabe(int wert){
+    string eingabe;
+    int result;
+
+    cout << "Anzahl der " << schein[wert] << " scheine, oder b um neu zu beginnen \n";
+    cin >> eingabe;
+    if(eingabe != "b"){
+        result = stoi (eingabe);
+    }
+    else
+        result = -1;
+
+    return result;
+}
+
+
+void schein_print(int wert, int anzahl){
+    cout << schein[wert] << " x " << anzahl << " = " << scheinwerte[wert] * anzahl << "\n";
+}
+
 int umsatz()
 {
-    string fuenf;
-    string ten;
-    string twenty;
-    string fifty;
-    string hund;
-    cout << "gib die Anzahl an 5euro Scheinen an\n";
-    cin >> fuenf;
-    int first = stoi (fuenf) * 5;
-    cout << "5 x " << fuenf << "  = " << first << "\n";
-
-    cout << "gib die Anzahl an 10euro Scheinen an\n";
-    cin >> ten;
-    int second = stoi (ten) * 10;
-    cout << "10 x " << ten << "  = " << second << "\n";
-
-    cout << "gib die Anzahl an 20euro Scheinen an\n";
-    cin >> twenty;
-    int third = stoi (twenty) * 20;
-    cout << "20 x " << twenty << "  = " << third << "\n";
-
-    cout << "gib die Anzahl an 50euro Scheinen an\n";
-    cin >> fifty;
-    int fourth = stoi (fifty) * 50;
-    cout << "50 x " << fifty << "  = " << fourth << "\n";
+    vector<int> anzahl (5,0);
+    cout << "Begin der Umsatz berechnung ..... \n";
     
-    cout << "gib die Anzahl an 100euro Scheinen an\n";
-    cin >> hund;
-    int fift = stoi (hund) * 100;
-    cout << "100 x " << hund << "  = " << fift << "\n";
+    bool cond = true;
+    int count = 0;
+    while(cond == true){
+         if(count == 5){
+            cond = false;
+            break;
+        }
+        int tmp = scheineingabe(count);
+       
+        if(tmp != -1){
+            anzahl[count] = tmp;
+            schein_print(count, tmp);
+            count++;
+        }
+        else
+            count = 0;
+    }
 
-    return first + second + third + fourth + fift;
-
+    int result;
+    for(int i = 0; i < 5; i++){
+        result = result + anzahl[i] * scheinwerte[i];
+    }
+    return result;
 }
+
+
 int main()
 {
+    buendel();
+
     vector<int> anzahlen = kassenzaehlung();
 
-    int sum = get_sum(anzahlen, prod);
+    int sum = get_sum(anzahlen, scheinwerte);
 
     //print_vec(anzahlen);
     cout << "In der Kasse befinden sich " << to_string(sum) << " in Muenzrollen\n";
